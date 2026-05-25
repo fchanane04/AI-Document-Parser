@@ -12,6 +12,7 @@ test_llm.py
 test_csv.py
 create_sample_excel.py
 test_excel.py
+empty_file.csv
 
 # Sample files (may contain sensitive data)
 sample_files/
