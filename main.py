@@ -23,18 +23,43 @@ def detect_file_ext(file_path: str) -> str:
     else:
         raise ValueError(f"Unsupported file type: {suffix}. Supported: .csv, .xlsx, .pdf")
 
+def extract(file_path: str, provider: str = "groq") -> list[dict]:
+    file_type = detect_file_ext(file_path)
+
+    if file_type == "csv":
+        from extractors.csv_extractor import extract_from_csv
+        print(f"Detected: CSV file")
+        return extract_from_csv(file_path)
+
+    elif file_type == "excel":
+        from extractors.excel_extractor import extract_from_excel
+        print(f"Detected: Excel file")
+        return extract_from_excel(file_path)
+
+    elif file_type == "pdf":
+        from extractors.pdf_extractor import extract_text_from_pdf
+        from extractors.ai_extractor import extract_with_ai
+        print(f"Detected: PDF file")
+        text = extract_text_from_pdf(file_path)
+        return extract_with_ai(text, provider)
+
 def main():
     parser = argparse.ArgumentParser(description="Document Extractor")
     parser.add_argument("--file", required=True, help="Path to the file")
+    parser.add_argument("--provider", default="groq", choices=["groq", "openai", "anthropic"], help="LLM provider")
     args = parser.parse_args()
 
     try:
-        file_type = detect_file_ext(args.file)
-        print(f"Supported file type detected: {file_type}")
-    except ValueError as e:
-        print(f"{e}")
+        customers = extract(args.file, args.provider)
+        print(f"\nExtracted {len(customers)} customer(s)")
+        import json
+        print(json.dumps(customers, indent=2))
     except FileNotFoundError as e:
         print(f"{e}")
+    except ValueError as e:
+        print(f"{e}")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
 
 if __name__ == "__main__":
     main()
