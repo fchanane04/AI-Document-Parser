@@ -1,7 +1,8 @@
 '''
-Command: python3 main.py --file <file.ext> --provider <llm>
+Command: python3 main.py --file <file.ext> --provider <llm> --output <name.json>
 '''
 
+import os
 import argparse
 from pathlib import Path
 
@@ -47,6 +48,7 @@ def main():
     parser = argparse.ArgumentParser(description="Document Extractor")
     parser.add_argument("--file", required=True, help="Path to the file")
     parser.add_argument("--provider", default="groq", choices=["groq", "openai", "anthropic"], help="LLM provider")
+    parser.add_argument("--output", default=None, help="Optional: save output to a JSON file")
     args = parser.parse_args()
 
     try:
@@ -54,6 +56,12 @@ def main():
         print(f"\nExtracted {len(customers)} customer(s)")
         import json
         print(json.dumps(customers, indent=2))
+        if args.output:
+            os.makedirs("data", exist_ok=True)
+            output_path = os.path.join("data", args.output)
+            with open(output_path, "w") as f:
+                json.dump(customers, f, indent=2)
+            print(f"\n*** Saved to {output_path} ***")
     except FileNotFoundError as e:
         print(f"{e}")
     except ValueError as e:
