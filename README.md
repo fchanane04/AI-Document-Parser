@@ -2,7 +2,7 @@
 
 A standalone AI-powered tool that extracts customer data from business documents (CSV, Excel, PDF) and converts it into structured JSON.
 
-Built as a companion tool for the [SaaS Metrics Dashboard](https://github.com/yourusername/saas-metrics-dashboard) project.
+Built as a companion tool for the [SaaS Metrics Dashboard](https://github.com/fchanane04/saas-metrics-dashboard) project.
 
 ---
 
