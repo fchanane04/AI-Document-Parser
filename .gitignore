@@ -9,6 +9,7 @@ __pycache__/
 
 # Test files
 test_llm.py
+test_csv.py
 
 # Sample files (may contain sensitive data)
 sample_files/
