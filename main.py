@@ -5,6 +5,7 @@ Command: python3 main.py --file <file.ext> --provider <llm> --output <name.json>
 import os
 import argparse
 from pathlib import Path
+from extractors.validator import validate_customers
 
 def detect_file_ext(file_path: str) -> str:
     path = Path(file_path)
@@ -30,19 +31,21 @@ def extract(file_path: str, provider: str = "groq") -> list[dict]:
     if file_type == "csv":
         from extractors.csv_extractor import extract_from_csv
         print(f"Detected: CSV file")
-        return extract_from_csv(file_path)
+        customers = extract_from_csv(file_path)
 
     elif file_type == "excel":
         from extractors.excel_extractor import extract_from_excel
         print(f"Detected: Excel file")
-        return extract_from_excel(file_path)
+        customers = extract_from_excel(file_path)
 
     elif file_type == "pdf":
         from extractors.pdf_extractor import extract_text_from_pdf
         from extractors.ai_extractor import extract_with_ai
         print(f"Detected: PDF file")
         text = extract_text_from_pdf(file_path)
-        return extract_with_ai(text, provider)
+        customers = extract_with_ai(text, provider)
+    return validate_customers(customers)
+
 
 def main():
     parser = argparse.ArgumentParser(description="Document Extractor")

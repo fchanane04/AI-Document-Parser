@@ -13,6 +13,7 @@ test_csv.py
 create_sample_excel.py
 test_excel.py
 empty_file.csv
+test_validator.py
 
 # Sample files (may contain sensitive data)
 sample_files/
