@@ -22,8 +22,10 @@ def detect_file_ext(file_path: str) -> str:
         return "excel"
     elif suffix == ".pdf":
         return "pdf"
+    elif suffix in [".png", ".jpg", ".jpeg"]:
+        return "image"
     else:
-        raise ValueError(f"Unsupported file type: {suffix}. Supported: .csv, .xlsx, .pdf")
+        raise ValueError(f"Unsupported file type: {suffix}. Supported: .csv, .xlsx, .pdf, .png, .jpg, .jpeg")
 
 def extract(file_path: str, provider: str = "groq") -> list[dict]:
     file_type = detect_file_ext(file_path)
@@ -43,6 +45,12 @@ def extract(file_path: str, provider: str = "groq") -> list[dict]:
         from extractors.ai_extractor import extract_with_ai
         print(f"Detected: PDF file")
         text = extract_text_from_pdf(file_path)
+        customers = extract_with_ai(text, provider)
+    elif file_type == "image":
+        from extractors.image_extractor import extract_text_from_image
+        from extractors.ai_extractor import extract_with_ai
+        print(f"Detected: Image file")
+        text = extract_text_from_image(file_path)
         customers = extract_with_ai(text, provider)
     return validate_customers(customers)
 
