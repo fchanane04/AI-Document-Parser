@@ -5,6 +5,8 @@ from extractors.llm_provider import get_llm
 from extractors.validator import validate_customers
 from dotenv import load_dotenv
 
+import json
+
 load_dotenv()
 
 #Tools
@@ -16,7 +18,7 @@ def extract_csv(file_path: str) -> str:
     from extractors.csv_extractor import extract_from_csv
     customers = extract_from_csv(file_path)
     validated = validate_customers(customers)
-    return str(validated)
+    return json.dumps(validated)
 
 @tool
 def extract_excel(file_path: str) -> str:
@@ -25,7 +27,7 @@ def extract_excel(file_path: str) -> str:
     from extractors.excel_extractor import extract_from_excel
     customers = extract_from_excel(file_path)
     validated = validate_customers(customers)
-    return str(validated)
+    return json.dumps(validated)
 
 @tool
 def extract_pdf(file_path: str) -> str:
@@ -36,7 +38,7 @@ def extract_pdf(file_path: str) -> str:
     text = extract_text_from_pdf(file_path)
     customers = extract_with_ai(text)
     validated = validate_customers(customers)
-    return str(validated)
+    return json.dumps(validated)
 
 @tool
 def extract_image(file_path: str) -> str:
@@ -47,7 +49,7 @@ def extract_image(file_path: str) -> str:
     text = extract_text_from_image(file_path)
     customers = extract_with_ai(text)
     validated = validate_customers(customers)
-    return str(validated)
+    return json.dumps(validated)
 
 #Create agent
 
