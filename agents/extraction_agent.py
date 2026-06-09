@@ -1,5 +1,5 @@
 from langchain_core.tools import tool
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.prebuilt import create_react_agent
 from extractors.llm_provider import get_llm
 from extractors.validator import validate_customers
@@ -56,14 +56,26 @@ def extract_image(file_path: str) -> str:
 def create_extraction_agent(provider: str = "groq"):
     llm = get_llm(provider)
     tools = [extract_csv, extract_excel, extract_pdf, extract_image]
+    system_prompt = """You are a data extraction assistant.
+1. Call the appropriate tool ONCE based on the file extension
+2. After receiving the tool result, immediately return it as your final answer
+3. Do NOT call any tool more than once
+4. Do NOT summarize or modify the output"""
 
-    agent = create_react_agent(llm, tools)
+    agent = create_react_agent(
+        llm,
+        tools,
+        prompt=system_prompt
+    )
 
     return agent
 
 def run_agent(task: str, provider: str = "groq") -> str:
     agent = create_extraction_agent(provider)
-    result = agent.invoke({"messages": [HumanMessage(content=task)]})
+    result = agent.invoke(
+        {"messages": [HumanMessage(content=task)]},
+        config={"recursion_limit": 5}
+    )
     return result["messages"][-1].content
 
 
