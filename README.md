@@ -1,4 +1,4 @@
-# Document Extractor
+# Document Parser
 
 A standalone AI-powered tool that extracts customer data from business documents (CSV, Excel, PDF) and converts it into structured JSON.
 
